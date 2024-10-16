@@ -6,7 +6,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method === 'GET') {
         const currentTime = new Date();
         try {
-            const client = await Client.findOne({ name: "clientID" });
+            const client = await Client.findOne({ name: "-122540883" });
             if (client) {
                 res.json({ isTimeOut: client.expDate! < currentTime });
             } else {
