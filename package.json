@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "mongodb": "^6.9.0",
+    "mongoose": "^8.7.1",
     "vercel": "^37.8.0"
   }
 }
