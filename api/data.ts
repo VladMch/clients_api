@@ -1,10 +1,17 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 
-export default function handler(req: VercelRequest, res: VercelResponse) {
+const Client = require('./db/clientModel');
+
+export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method === 'GET') {
         const currentTime = new Date();
         try {
-            res.json({ isTime: currentTime });
+            const client = await Client.findOne({ name: "clientID" });
+            if (client) {
+                res.json({ isTimeOut: client.expDate < currentTime });
+            } else {
+                res.status(404).json({ error: 'Пользователь не найден' });
+            }
         } catch (error) {
             res.status(500).json({ error: 'Ошибка сервера' });
         }
@@ -15,7 +22,7 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
         }
 
         try {
-            res.json({ client: "truee" });
+            res.json({ client: "true" });
         } catch (error) {
             res.status(500).json({ error: 'Ошибка сервера' });
         }
