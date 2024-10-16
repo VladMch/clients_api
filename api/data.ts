@@ -15,7 +15,7 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
         }
 
         try {
-            res.json({ client: "true" });
+            res.json({ client: "truee" });
         } catch (error) {
             res.status(500).json({ error: 'Ошибка сервера' });
         }
