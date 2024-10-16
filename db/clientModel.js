@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model } from 'mongodb';
 
 const clientSchema = new Schema({
   name: { type: String, required: true, unique: true },
