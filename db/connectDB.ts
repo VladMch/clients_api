@@ -1,15 +1,19 @@
 import mongoose from "mongoose";
-const dbUrl:string = process.env.DATABASE_URL!;
+const dbUrl: string = process.env.DATABASE_URL!;
 
-mongoose.connect(dbUrl).then(() => {
-  console.log('Успешное подключение к базе данных');
-}).catch((error) => {
-  console.error('Ошибка подключения к базе данных:', error);
-});
+const run = async () => {
+  mongoose.connect(dbUrl).then(() => {
+    console.log('Успешное подключение к базе данных');
+  }).catch((error) => {
+    console.error('Ошибка подключения к базе данных:', error);
+  });
 
-mongoose.connection.on('connected', () => {
-  console.log('Подключено к базе данных MongoDB');
-});
+  mongoose.connection.on('connected', () => {
+    console.log('Подключено к базе данных MongoDB');
+  });
+}
+
+export default run;
 
 
 //mongo URI

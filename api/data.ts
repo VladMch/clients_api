@@ -1,8 +1,10 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 
 import Client from '../db/clientModel';
+import DB from '../db/connectDB';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+    DB;
     if (req.method === 'GET') {
         const currentTime = new Date();
         try {
