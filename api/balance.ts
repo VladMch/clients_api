@@ -7,9 +7,9 @@ const map = new Map([
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method === 'GET') {
-        const clientID: string = req.body;
+        const clientID = req.query.name;
         try {
-            if (map.has(clientID)) {
+            if (typeof clientID === 'string' && map.has(clientID)) {
                 res.json({ count: map.get(clientID) });
             } else if (clientID == "all") {
                 res.json({ Value: JSON.stringify(Array.from(map.entries())) });

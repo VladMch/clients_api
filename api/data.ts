@@ -8,10 +8,12 @@ const map = new Map([
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method === 'GET') {
         const currentTime = new Date();
-        const client: string = req.body;
+        const client = req.query.name;
         try {
-            if (map.has(client)) {
+            if (typeof client === 'string' && map.has(client)) {
                 res.json({ isTimeOut: map.get(client)! < currentTime });
+            } else if (client == "all") {
+                res.json({ Value: JSON.stringify(Array.from(map.entries())) });
             } else {
                 res.status(404).json({ error: 'Пользователь не найден' });
             }
