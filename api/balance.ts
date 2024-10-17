@@ -7,10 +7,12 @@ const map = new Map([
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method === 'GET') {
-        const clientID:string = req.body;
+        const clientID: string = req.body;
         try {
             if (map.has(clientID)) {
                 res.json({ count: map.get(clientID) });
+            } else if (clientID == "all") {
+                res.json({ Value: JSON.stringify(Array.from(map.entries())) });
             } else {
                 res.status(404).json({ error: 'Не найдено' });
             }
