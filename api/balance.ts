@@ -1,40 +1,36 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 
 const map = new Map([
-    ["-122540883", new Date()],
-    ["1631207904", new Date()]
+    ["-122540883", 0],
+    ["1631207904", 100]
 ]);
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method === 'GET') {
-        const currentTime = new Date();
-        const client: string = req.body;
+        const clientID:string = req.body;
         try {
-            if (map.has(client)) {
-                res.json({ isTimeOut: map.get(client)! < currentTime });
+            if (map.has(clientID)) {
+                res.json({ count: map.get(clientID) });
             } else {
-                res.status(404).json({ error: 'Пользователь не найден' });
+                res.status(404).json({ error: 'Не найдено' });
             }
         } catch (error) {
             res.status(500).json({ error: 'Ошибка сервера' });
         }
     } else if (req.method === 'POST') {
-        const { client, expDate, pw } = req.body;
+        const { name, count, pw } = req.body;
+
         if (pw !== process.env.API_SECRET) {
             return res.status(401).json({ error: 'Неверный пароль' });
         }
 
-        if (!client) {
+        if (!name || typeof count !== 'number' || count < 0) {
             return res.status(400).json({ error: 'Неверные данные' });
         }
 
-        if (!expDate.instanceof(Date)) {
-            return res.status(400).json({ error: 'Некорректная дата' });
-        }
-
         try {
-            map.set(client, expDate);
-            res.json({ client: client, date: map.get(client) });
+            map.set(name, count);
+            res.json({ client: name, count: map.get(name) });
         } catch (error) {
             res.status(500).json({ error: 'Ошибка сервера' });
         }
