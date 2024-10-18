@@ -1,8 +1,9 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 
 const map = new Map([
-    ["-122540883", 0],
-    ["1631207904", 100]
+    ["total", 0],
+    ["1201391232", 0],
+    ["1631207904", 0]
 ]);
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -19,6 +20,20 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         } catch (error) {
             res.status(500).json({ error: 'Ошибка сервера' });
         }
+    } else if (req.method === 'PATCH') {
+        const clientID = req.query.name;
+        try {
+            if (typeof clientID === 'string' && map.has(clientID)) {
+                map.set(clientID, map.get(clientID)! - 1);
+                map.set("total", map.get("total")! - 1)
+                res.json({ count: map.get(clientID) });
+            } else {
+                res.status(404).json({ error: 'Не найдено' });
+            }
+        } catch (error) {
+            res.status(500).json({ error: 'Ошибка сервера' });
+        }
+
     } else if (req.method === 'POST') {
         const { name, count, pw } = req.body;
 

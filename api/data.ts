@@ -1,14 +1,14 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 
 const map = new Map([
-    ["-122540883", new Date()],
+    ["1201391232", new Date()],
     ["1631207904", new Date()]
 ]);
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method === 'GET') {
         const currentTime = new Date();
-        const client = req.query.name;
+        const client = req.query.client;
         try {
             if (typeof client === 'string' && map.has(client)) {
                 res.json({ isTimeOut: map.get(client)! < currentTime });
@@ -35,7 +35,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         }
 
         try {
-            map.set(client, expDate);
+            map.set(client, new Date(expDate));
             res.json({ client: client, date: map.get(client) });
         } catch (error) {
             res.status(500).json({ error: 'Ошибка сервера' });
