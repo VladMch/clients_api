@@ -24,8 +24,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         const clientID = req.query.name;
         try {
             if (typeof clientID === 'string' && map.has(clientID)) {
-                map.set(clientID, map.get(clientID)! - 1);
-                map.set("total", map.get("total")! - 1)
+                var x:number = map.get(clientID)! - 1;
+                map.set(clientID, x);
+                x = map.get("total")! - 1;
+                map.set("total", x);
                 res.json({ count: map.get(clientID) });
             } else {
                 res.status(404).json({ error: 'Не найдено' });
