@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
 import clientPromise from "../db/dataBase"
 
-const dbName = "clientsDB";
+const dbName = "test";
 const collectionName = "clients";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
