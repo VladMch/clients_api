@@ -1,40 +1,63 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-import { mapData } from "../db/storage"
+import clientPromise from "../db/dataBase"
+
+const dbName = "clientsDB";
+const collectionName = "clients";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method === 'GET') {
         const currentTime = new Date();
-        const client = req.query.client;
+        const name = req.query.name as string;
         try {
-            if (typeof client === 'string' && mapData.has(client)) {
-                res.json({ isTimeOut: mapData.get(client)! < currentTime });
-            } else if (client == "all") {
-                res.json({ Value: JSON.stringify(Array.from(mapData.entries())) });
+            const client = await clientPromise;
+            const db = client.db(dbName);
+
+            if (name == "all") {
+                const users = await db.collection(collectionName).find({}).toArray();
+                res.status(200).json(users);
+            }
+
+            const user = await db.collection(collectionName).findOne({ name });
+            if (user) {
+                res.json({ isTimeOut: user.expDate < currentTime });
             } else {
                 res.status(404).json({ error: 'Пользователь не найден' });
             }
+
         } catch (error) {
             res.status(500).json({ error: 'Ошибка сервера' });
         }
     } else if (req.method === 'POST') {
-        const { client, expDate, pw } = req.body;
+        const { name, expDate, pw } = req.body;
         if (pw !== process.env.API_SECRET) {
             return res.status(401).json({ error: 'Неверный пароль' });
         }
 
-        if (!client) {
+        if (!name) {
             return res.status(400).json({ error: 'Неверные данные' });
         }
 
-        // if (!(expDate instanceof Date)) {
-        //     return res.status(400).json({ error: 'Некорректная дата' });
-        // }
-
         try {
-            mapData.set(client, new Date(expDate));
-            res.json({ client: client, date: mapData.get(client) });
+            const client = await clientPromise;
+            const db = client.db(dbName);
+
+            const user = await db.collection(collectionName).findOneAndUpdate(
+                { name: name },
+                { expDate: new Date(expDate) },
+                { upsert: true }
+            );
+
+            if (user == null) {
+                res.status(500).json({ error: 'Ошка при работе с базой данных' });
+            } else if (user.upsertedCount > 0) {
+                res.status(201).json({ message: 'Пользователь добавлен', userId: user.upsertedId });
+            } else {
+                res.status(200).json({ message: 'Пользователь обновлен' });
+            }
         } catch (error) {
             res.status(500).json({ error: 'Ошибка сервера' });
         }
+    } else {
+        res.status(405).json({ error: 'Метод не поддерживается' });
     }
 }
