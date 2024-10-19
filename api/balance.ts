@@ -35,7 +35,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 { $inc: { count: -1 } }
             );
             if (user) {
-                res.json({ count: user.count });
+                res.json({ count: user.count - 1});
             } else {
                 res.status(404).json({ error: 'Не найдено' });
             }
