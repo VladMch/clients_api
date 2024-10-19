@@ -30,9 +30,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             return res.status(400).json({ error: 'Неверные данные' });
         }
 
-        if (!(expDate instanceof Date)) {
-            return res.status(400).json({ error: 'Некорректная дата' });
-        }
+        // if (!(expDate instanceof Date)) {
+        //     return res.status(400).json({ error: 'Некорректная дата' });
+        // }
 
         try {
             map.set(client, new Date(expDate));
