@@ -55,7 +55,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 res.status(200).json({ message: 'Пользователь обновлен' });
             }
         } catch (error) {
-            res.status(500).json({ error: 'Ошибка сервера' });
+            res.status(500).json({ error: 'Ошибка сервера: ' + error.message });
         }
     } else {
         res.status(405).json({ error: 'Метод не поддерживается' });
