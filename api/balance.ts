@@ -1,19 +1,14 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node'
-
-const map = new Map([
-    ["total", 0],
-    ["1201391232", 0],
-    ["1631207904", 0]
-]);
+import { mapBalance } from "../db/storage"
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method === 'GET') {
-        const clientID = req.query.name;
+        const clientID = req.query.name as string;
         try {
-            if (typeof clientID === 'string' && map.has(clientID)) {
-                res.json({ count: map.get(clientID) });
+            if (mapBalance.has(clientID)) {
+                res.json({ count: mapBalance.get(clientID) });
             } else if (clientID == "all") {
-                res.json({ Value: JSON.stringify(Array.from(map.entries())) });
+                res.json({ Value: JSON.stringify(Array.from(mapBalance.entries())) });
             } else {
                 res.status(404).json({ error: 'Не найдено' });
             }
@@ -21,12 +16,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             res.status(500).json({ error: 'Ошибка сервера' });
         }
     } else if (req.method === 'PATCH') {
-        const clientID = req.query.name;
+        const clientID = req.query.name as string;
         try {
-            if (typeof clientID === 'string' && map.has(clientID)) {
-                map.set(clientID, map.get(clientID)! - 1);
-                map.set("total", map.get("total")! - 1)
-                res.json({ count: map.get(clientID) });
+            if (mapBalance.has(clientID)) {
+                var x: number = mapBalance.get(clientID)! - 1;
+                mapBalance.set(clientID, x);
+                x = mapBalance.get("total")! - 1;
+                mapBalance.set("total", x)
+                res.json({ count: mapBalance.get(clientID) });
             } else {
                 res.status(404).json({ error: 'Не найдено' });
             }
@@ -46,8 +43,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         }
 
         try {
-            map.set(name, count);
-            res.json({ client: name, count: map.get(name) });
+            mapBalance.set(name, count);
+            res.json({ client: name, count: mapBalance.get(name) });
         } catch (error) {
             res.status(500).json({ error: 'Ошибка сервера' });
         }
