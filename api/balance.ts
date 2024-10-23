@@ -26,16 +26,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             res.status(500).json({ error: 'Ошибка сервера' });
         }
     } else if (req.method === 'PATCH') {
-        const name = req.query.name as string;
+        const { name, count } = req.body;
         const client = await clientPromise;
         const db = client.db(dbName);
         try {
             const user = await db.collection(collectionName).findOneAndUpdate(
                 { name: name },
-                { $inc: { count: -1 } }
+                { $inc: { count: -count } }
             );
             if (user) {
-                res.json({ count: user.count - 1});
+                res.json({ count: user.count - count});
             } else {
                 res.status(404).json({ error: 'Не найдено' });
             }
