@@ -11,7 +11,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             const client = await clientPromise;
             const db = client.db(dbName);
 
-            const user = await db.collection(collectionName).findOne({ Name });
+            const user = await db.collection(collectionName).findOne({ name: Name });
             if (user) {
                 res.json({ message: 'OK' });
             } else {
@@ -19,7 +19,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                     {api: Api, name: Name, inn: 0, phone: 0, getFinanceDataByFioDob: 0}
                 );
     
-                res.status(404).json({ error: 'Пользователь не найден' });
+                res.json({ message: 'Создан новый пользователь ' + Name });
             }
 
         } catch (error) {

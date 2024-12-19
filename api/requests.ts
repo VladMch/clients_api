@@ -33,19 +33,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             const client = await clientPromise;
             const db = client.db(dbName);
 
-            const user = await db.collection(collectionName).findOneAndUpdate(
-                { name: Name },
-                { $inc: {inn: INN, phone: Phone, getFinanceDataByFioDob: Add}, $set: {api: Api} },
-                { upsert: true }
-            );
+            // const user = await db.collection(collectionName).findOneAndUpdate(
+            //     { name: Name },
+            //     { $inc: {inn: INN, phone: Phone, getFinanceDataByFioDob: Add}, $set: {api: Api} },
+            //     { upsert: true }
+            // );
 
+            var user = await db.collection(collectionName).findOne({ name: Name });
             if (user == null) {
                 res.status(500).json({ error: 'Ошка при работе с базой данных' });
-            } else if (user.upsertedCount > 0) {
-                res.status(201).json({ message: 'Пользователь добавлен', userId: user.upsertedId });
-            } else {
-                res.status(200).json({ message: 'Пользователь обновлен' });
+                return;
             }
+
+            await db.collection(collectionName).updateOne({ name: Name }, { $inc: {inn: INN, phone: Phone, getFinanceDataByFioDob: Add}, $set: {api: Api} },{ upsert: true });
+
+            // if (user.upsertedCount > 0) {
+            //     res.status(201).json({ message: 'Пользователь добавлен', userId: user.upsertedId });
+            // } else {
+            //     res.status(200).json({ message: 'Пользователь обновлен' });
+            // }
         } catch (error) {
             res.status(500).json({ error: 'Ошибка сервера: ' + error.message });
         }
