@@ -6,21 +6,21 @@ const collectionName = "users";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method === 'GET') {
-        const Api = req.query.name as string;
+        const Api = req.query.api as string;
         try {
             const client = await clientPromise;
             const db = client.db(dbName);
-            var hash = 0,
-            i, chr;
-            if (Api.length === 0) return hash;
-            for (i = 0; i < Api.length; i++) {
-                chr = Api.charCodeAt(i);
-                hash = ((hash << 5) - hash) + chr;
-                hash |= 0;
-            }
-            hash = ((hash >> 4) * 2) << 4;
+            // var hash = 0,
+            // i, chr;
+            // if (Api.length === 0) return hash;
+            // for (i = 0; i < Api.length; i++) {
+            //     chr = Api.charCodeAt(i);
+            //     hash = ((hash << 5) - hash) + chr;
+            //     hash |= 0;
+            // }
+            // hash = ((hash >> 4) * 2) << 4;
             
-            const users = await db.collection(collectionName).find({api: hash}).toArray();
+            const users = await db.collection(collectionName).find({api: Api}).toArray();
             res.status(200).json(users);
 
         } catch (error) {
@@ -32,6 +32,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         try {
             const client = await clientPromise;
             const db = client.db(dbName);
+
+            if (!Name || typeof INN !== 'number' || Phone !== 'number') {
+                return res.status(400).json({ error: 'Неверные данные' });
+            }
 
             // const user = await db.collection(collectionName).findOneAndUpdate(
             //     { name: Name },
