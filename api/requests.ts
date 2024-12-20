@@ -21,7 +21,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             hash = ((hash >> 4) * 2) << 4;
             
             const users = await db.collection(collectionName).find({api: hash}).toArray();
-            res.status(200).json(users);
+            res.status(200).json(Api + ' -> ' + hash + ' -> ' + users);
 
         } catch (error) {
             res.status(500).json({ error: 'Ошибка сервера' });
@@ -33,15 +33,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             const client = await clientPromise;
             const db = client.db(dbName);
 
-            const parsedData = {
-                INN: Number(INN),
-                Phone: Number(Phone),
-                Add: Number(Add),
-              };
+            // const parsedData = {
+            //     INN: Number(INN),
+            //     Phone: Number(Phone),
+            //     Add: Number(Add),
+            //   };
 
-            // if (!Name || typeof INN !== 'number' || Phone !== 'number') {
-            //     return res.status(400).json({ error: 'Неверные данные' });
-            // }
+            if (!Name || typeof INN !== 'number' || Phone !== 'number') {
+                return res.status(400).json({ error: 'Неверные данные', body: req.body, INN: INN, Phone: Phone, Add: Add, Name:Name, Api:Api});
+            }
 
             // const user = await db.collection(collectionName).findOneAndUpdate(
             //     { name: Name },
@@ -55,7 +55,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                 return;
             }
 
-            await db.collection(collectionName).updateOne({ name: Name }, { $inc: {inn: parsedData.INN, phone: parsedData.Phone, getFinanceDataByFioDob: parsedData.Add}, $set: {api: Api} },{ upsert: true });
+            await db.collection(collectionName).updateOne({ name: Name }, { $inc: {inn: INN, phone: Phone, getFinanceDataByFioDob: Add}, $set: {api: Api} },{ upsert: true });
 
             // if (user.upsertedCount > 0) {
             //     res.status(201).json({ message: 'Пользователь добавлен', userId: user.upsertedId });
