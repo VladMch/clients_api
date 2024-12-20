@@ -18,7 +18,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
                     currentTime.setDate(currentTime.getDate() + 1);
                     await db.collection(collectionName).updateOne(
                         {name: Name},
-                        {$set: {inn: 0, phone: 0, getFinanceDataByFioDob: 0, resetAt: currentTime}}
+                        {$set: {inn: 0, phone: 0, Probito_po_FIO: 0, resetAt: currentTime}}
                     )
                     res.json({ message: 'User resetted' });
                 }
@@ -26,7 +26,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             } else {
                 currentTime.setDate(currentTime.getDate() + 1);
                 await db.collection(collectionName).insertOne(
-                    {api: Api, name: Name, inn: 0, phone: 0, getFinanceDataByFioDob: 0, resetAt: currentTime}
+                    {api: Api, name: Name, inn: 0, phone: 0, Probito_po_FIO: 0, resetAt: currentTime}
                 );
                 res.json({ message: 'Создан новый пользователь ' + Name });
             }

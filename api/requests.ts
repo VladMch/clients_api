@@ -20,7 +20,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             }
             hash = ((hash >> 4) * 2) << 4;
             
-            const users = await db.collection(collectionName).find({api: hash}).toArray();
+            const users = await db.collection(collectionName).find(
+                {api: hash},
+                {projection: {_id: 0, api: 0, resetAt: 0}}
+            ).toArray();
             res.status(200).json(users);
 
         } catch (error) {
@@ -35,7 +38,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
             const user = await db.collection(collectionName).findOneAndUpdate(
                 { name: Name },
-                { $inc: {inn: INN, phone: Phone, getFinanceDataByFioDob: Add} }
+                { $inc: {inn: INN, phone: Phone, Probito_po_FIO: Add} }
             );
 
             if (user == null) {
