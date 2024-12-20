@@ -33,22 +33,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             const client = await clientPromise;
             const db = client.db(dbName);
 
-            // const parsedData = {
-            //     INN: Number(INN),
-            //     Phone: Number(Phone),
-            //     Add: Number(Add),
-            //   };
-
-            // if (!Name || typeof INN !== 'number' || Phone !== 'number') {
-            //     return res.status(400).json({ error: 'Неверные данные', body: req.body, INN: typeof(INN), Phone: typeof(Phone), Add: typeof(Add), Name: typeof(Name), Api: typeof(Api)});
-            // }
-
             const user = await db.collection(collectionName).findOneAndUpdate(
                 { name: Name },
                 { $inc: {inn: INN, phone: Phone, getFinanceDataByFioDob: Add} }
             );
 
-            // const user = await db.collection(collectionName).findOne({ name: Name });
             if (user == null) {
                 res.status(500).json({ error: 'Ошка при работе с базой данных' });
             }else {
@@ -57,13 +46,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
             // return res.status(200).json({ error: 'Данные', user: user, body: req.body, INN: typeof(INN), Phone: typeof(Phone), Add: typeof(Add), Name: typeof(Name)});
 
-            // await db.collection(collectionName).updateOne({ name: Name }, { $inc: {inn: INN, phone: Phone, getFinanceDataByFioDob: Add}, $set: {api: Api} },{ upsert: true });
-
-            // if (user.upsertedCount > 0) {
-            //     res.status(201).json({ message: 'Пользователь добавлен', userId: user.upsertedId });
-            // } else {
-            //     res.status(200).json({ message: 'Пользователь обновлен' });
-            // }
         } catch (error) {
             res.status(500).json({ error: 'Ошибка сервера: ' + error.message });
         }
