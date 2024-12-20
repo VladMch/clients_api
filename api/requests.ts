@@ -27,7 +27,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             res.status(500).json({ error: 'Ошибка сервера' });
         }
     } else if (req.method === 'POST') {
-        const { INN, Phone, Add, Name, Api } = req.body;
+        const { INN, Phone, Add, Name } = req.body;
 
         try {
             const client = await clientPromise;
@@ -43,19 +43,19 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             //     return res.status(400).json({ error: 'Неверные данные', body: req.body, INN: typeof(INN), Phone: typeof(Phone), Add: typeof(Add), Name: typeof(Name), Api: typeof(Api)});
             // }
 
-            // const user = await db.collection(collectionName).findOneAndUpdate(
-            //     { name: Name },
-            //     { $inc: {inn: INN, phone: Phone, getFinanceDataByFioDob: Add}, $set: {api: Api} },
-            //     { upsert: true }
-            // );
+            const user = await db.collection(collectionName).findOneAndUpdate(
+                { name: Name },
+                { $inc: {inn: INN, phone: Phone, getFinanceDataByFioDob: Add} }
+            );
 
-            const user = await db.collection(collectionName).findOne({ name: Name });
+            // const user = await db.collection(collectionName).findOne({ name: Name });
             if (user == null) {
                 res.status(500).json({ error: 'Ошка при работе с базой данных' });
-                return;
+            }else {
+                res.status(200).json({ message: 'Пользователь обновлен' });
             }
 
-            return res.status(200).json({ error: 'Данные', user: user, body: req.body, INN: typeof(INN), Phone: typeof(Phone), Add: typeof(Add), Name: typeof(Name), Api: typeof(Api)});
+            // return res.status(200).json({ error: 'Данные', user: user, body: req.body, INN: typeof(INN), Phone: typeof(Phone), Add: typeof(Add), Name: typeof(Name)});
 
             // await db.collection(collectionName).updateOne({ name: Name }, { $inc: {inn: INN, phone: Phone, getFinanceDataByFioDob: Add}, $set: {api: Api} },{ upsert: true });
 
