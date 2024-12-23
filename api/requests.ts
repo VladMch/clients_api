@@ -21,7 +21,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             hash = ((hash >> 4) * 2) << 4;
             
             const users = await db.collection(collectionName).find(
-                {api: hash},
+                {api: hash, resetAt: {$gt: new Date()}},
                 {projection: {_id: 0, api: 0, resetAt: 0}}
             ).toArray();
             res.status(200).json(users);
