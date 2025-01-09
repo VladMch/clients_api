@@ -21,8 +21,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             hash = ((hash >> 4) * 2) << 4;
             
             const users = await db.collection(collectionName).find(
-                {api: hash, resetAt: {$gt: new Date()}},
-                {projection: {_id: 0, api: 0, resetAt: 0}}
+                {api: hash},
+                {projection: {_id: 0, api: 0}}
             ).toArray();
             res.status(200).json(users);
 
@@ -30,7 +30,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             res.status(500).json({ error: 'Ошибка сервера' });
         }
     } else if (req.method === 'POST') {
-        const { INN, Phone, Add, Name } = req.body;
+        const { INN, Phone, Add, Req, Name } = req.body;
 
         try {
             const client = await clientPromise;
@@ -38,7 +38,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
             const user = await db.collection(collectionName).findOneAndUpdate(
                 { name: Name },
-                { $inc: {inn: INN, phone: Phone, Probito_po_FIO: Add} }
+                { $inc: {inn: INN, phone: Phone, Probito_po_FIO: Add, Provereno_colichestvo: Req} }
             );
 
             if (user == null) {
