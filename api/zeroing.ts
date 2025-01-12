@@ -3,6 +3,8 @@ import clientPromise from "../db/dataBase"
 
 const dbName = "test";
 const collectionName = "users";
+const collectionNameHistory = "history";
+
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method === 'GET') {
@@ -10,11 +12,16 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             const client = await clientPromise;
             const db = client.db(dbName);
 
-            const users = await db.collection(collectionName).updateMany(
+            await db.collection(collectionName).aggregate([
+                { $match: {} },
+                { $out: collectionNameHistory }
+            ]);
+            await db.collection(collectionName).updateMany(
                 {},
-                {$set: {inn: 0, phone: 0, Probito_po_FIO: 0}}
+                {$set: {inn: 0, phone: 0, Probito_po_FIO: 0, Provereno_colichestvo: 0}}
             );
-            res.status(200).json(users);
+
+            res.status(200).json({status: 'OK'});
 
         } catch (error) {
             res.status(500).json({ error: 'Ошибка сервера' });
