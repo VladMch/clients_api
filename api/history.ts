@@ -3,7 +3,7 @@ import clientPromise from "../db/dataBase"
 
 const dbName = "test";
 const collectionName = "history";
-const collectionNameHistory = "history";
+const collectionNameFrom = "users";
 
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -36,11 +36,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             const client = await clientPromise;
             const db = client.db(dbName);
 
-            db.collection(collectionName).aggregate([
+            db.collection(collectionNameFrom).aggregate([
                 { $match: {} },
-                { $out: collectionNameHistory }
+                { $out: collectionName }
             ]);
-            res.status(200); 
+            res.status(200).json({status: 'OK'}); 
         } catch (error) {
             res.status(500).json({ error: 'Ошибка сервера' });
         }

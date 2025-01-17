@@ -7,17 +7,14 @@ const collectionName = "users";
 const generateTableHTML = (data: any[]): string => {
     if (!data.length) return '<p>No data available</p>';
 
-    // Создание заголовков таблицы
     const headers = Object.keys(data[0]);
     const headerHTML = headers.map(header => `<th>${header}</th>`).join("");
 
-    // Создание строк таблицы
     const rowsHTML = data.map(row => {
       const cells = headers.map(header => `<td>${row[header]}</td>`).join("");
       return `<tr>${cells}</tr>`;
     }).join("");
 
-    // Формирование полной таблицы
     return `
       <table border="1" cellpadding="5" cellspacing="0">
         <thead><tr>${headerHTML}</tr></thead>
