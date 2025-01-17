@@ -36,10 +36,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             const client = await clientPromise;
             const db = client.db(dbName);
 
-            await db.collection(collectionName).aggregate([
+            db.collection(collectionName).aggregate([
                 { $match: {} },
                 { $out: collectionNameHistory }
             ]);
+            res.status(200); 
         } catch (error) {
             res.status(500).json({ error: 'Ошибка сервера' });
         }

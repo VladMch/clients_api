@@ -54,7 +54,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             <head>
               <meta charset="UTF-8">
               <meta name="viewport" content="width=device-width, initial-scale=1.0">
-              <title>JSON to HTML Table</title>
+              <title>Statistic</title>
               <style>
                 body { font-family: Arial, sans-serif; margin: 20px; }
                 table { width: 100%; border-collapse: collapse; }
@@ -63,7 +63,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
               </style>
             </head>
             <body>
-              <h1>Generated Table</h1>
+              <h1>Your api: ${Api}</h1>
               ${tableHTML}
             </body>
             </html>
