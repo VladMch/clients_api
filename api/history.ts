@@ -3,6 +3,8 @@ import clientPromise from "../db/dataBase"
 
 const dbName = "test";
 const collectionName = "history";
+const collectionNameHistory = "history";
+
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (req.method === 'GET') {
@@ -26,6 +28,18 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
             ).toArray();
             res.status(200).json(users);
 
+        } catch (error) {
+            res.status(500).json({ error: 'Ошибка сервера' });
+        }
+    } else if (req.method === 'POST') {
+        try{
+            const client = await clientPromise;
+            const db = client.db(dbName);
+
+            await db.collection(collectionName).aggregate([
+                { $match: {} },
+                { $out: collectionNameHistory }
+            ]);
         } catch (error) {
             res.status(500).json({ error: 'Ошибка сервера' });
         }
